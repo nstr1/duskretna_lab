@@ -1,99 +1,73 @@
 #include<stdio.h>
 #include<stdlib.h>
- 
-#define infinity 9999
-#define MAX 20
- 
-int G[MAX][MAX],spanning[MAX][MAX],n;
- 
-int prims();
- 
+#define size 11
+
 int main()
 {
-    int cost;
-    printf("Enter the ammount of nodes:");
-    scanf("%d", &n);
-    
-    printf("\nEnter the adjacency matrix:\n");
-    
-    for(i = 0; i < n; i++)
-        for(j=0;j<n;j++)
-            scanf("%d",&G[i][j]);
-    
-    cost=prims();
-    printf("\nSpanning tree matrix:\n");
-    
-    for(i=0;i<n;i++)
-    {
-        printf("\n");
-        for(j=0;j<n;j++)
-            printf("%d\t",spanning[i][j]);
-    }
-    
-    printf("\n\nTotal cost of spanning tree=%d",cost);
-    return 0;
-}
- 
-int prims()
-{
-    int cost[MAX][MAX];
-    int u,v,min_distance,distance[MAX],from[MAX];
-    int visited[MAX],no_of_edges,i,min_cost,j;
-    
-    //create cost[][] matrix,spanning[][]
-    for(i=0;i<n;i++)
-        for(j=0;j<n;j++)
-        {
-            if(G[i][j]==0)
-                cost[i][j]=infinity;
-            else
-                cost[i][j]=G[i][j];
-                spanning[i][j]=0;
+
+    int A[size][size] = {
+    /*1*/ { 0, 5, 6, 1, 0, 0, 0, 0, 0, 0, 0 },
+    /*2*/ { 5, 0, 0, 0, 2, 0, 2, 0, 0, 0, 0 },
+    /*3*/ { 6, 0, 0, 0, 1, 3, 0, 0, 0, 0, 0 },
+    /*4*/ { 1, 0, 0, 0, 0, 2, 3, 0, 0, 0, 0 },
+    /*5*/ { 0, 2, 1, 0, 0, 0, 0, 7, 7, 0, 0 },
+    /*6*/ { 0, 0, 3, 2, 0, 0, 0, 7, 0, 3, 0 },
+    /*7*/ { 0, 2, 0, 3, 0, 0, 0, 0, 4, 4, 0 },
+    /*8*/ { 0, 0, 0, 0, 7, 7, 0, 0, 0, 0, 5 },
+    /*9*/ { 0, 0, 0, 0, 7, 0, 4, 0, 0, 0, 4 },
+    /*10*/{ 0, 0, 0, 0, 0, 3, 4, 0, 0, 0, 4 },
+    /*11*/{ 0, 0, 0, 0, 0, 0, 0, 5, 4, 4, 0 }
+    };
+    int visited[size] = {0};
+    int i, j, p=0, q=0;
+    int arr[size]={1,2,3,4,5,6,7,8,9,10,11};
+    int min;
+    int flag=0;
+    for(i=0;i<size;i++){
+        for(j=0;j<size;j++){
+            if(flag ==0 && A[i][j]!=0){
+                flag=1;
+                p=i;
+                q=j;
+                min=A[p][q];
+            }
+            else if(flag == 1 && A[i][j]<min && A[i][j]!=0){
+                    p=i;
+                    q=j;
+                    min = A[i][j];
+            }
         }
-        
-    //initialise visited[],distance[] and from[]
-    distance[0]=0;
-    visited[0]=1;
-    
-    for(i=1;i<n;i++)
-    {
-        distance[i]=cost[0][i];
-        from[i]=0;
-        visited[i]=0;
     }
-    
-    min_cost=0;        //cost of spanning tree
-    no_of_edges=n-1;        //no. of edges to be added
-    
-    while(no_of_edges>0)
-    {
-        //find the vertex at minimum distance from the tree
-        min_distance=infinity;
-        for(i=1;i<n;i++)
-            if(visited[i]==0&&distance[i]<min_distance)
-            {
-                v=i;
-                min_distance=distance[i];
+    visited[p]=1;
+    visited[q]=1;
+    int flag1=0;
+    int weight;
+    int p1,q1,min1,kn=0;
+    printf("MST edges: \n");
+    printf("%d--%d \t (%d - weight)", arr[p], arr[q], A[p][q]);
+    do{
+        for(i=0;i<size;i++){
+            for(j=0;j<size;j++){
+                if(visited[i]==1 && visited[j]==0 && A[i][j]!=0){
+                    if(flag1==0){
+                        flag1 = 1;
+                        p1 = i;
+                        q1 = j;
+                        min1=A[i][j];    
+                    }else if(flag1 == 1 && A[i][j]< min1){
+                        p1 = i;
+                        q1 = j;
+                        min1 = A[i][j];
+                    }
+                }
             }
-            
-        u=from[v];
-        
-        //insert the edge in spanning tree
-        spanning[u][v]=distance[v];
-        spanning[v][u]=distance[v];
-        no_of_edges--;
-        visited[v]=1;
-        
-        //updated the distance[] array
-        for(i=1;i<n;i++)
-            if(visited[i]==0&&cost[i][v]<distance[i])
-            {
-                distance[i]=cost[i][v];
-                from[i]=v;
-            }
-        
-        min_cost=min_cost+cost[u][v];
-    }
-    
-    return(min_cost);
+        }
+        visited[q1]=1;
+        flag1=0;
+        printf("\n%d--%d \t (%d - weight)", arr[p1], arr[q1], A[p1][q1]);
+
+        kn++;
+    }while(kn < size-2);
+
+    return 0;
 }
